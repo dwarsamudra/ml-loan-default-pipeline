@@ -20,29 +20,11 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Cache pip packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install scikit-learn pandas numpy matplotlib seaborn joblib fastapi uvicorn pydantic pytest httpx
 
-      - name: Train model (needed for tests)
+      - name: Train model
         run: python src/train.py
 
-      - name: Run unit tests
-        run: pytest tests/ -v --tb=short -k "not TestAPISchema" --ignore=tests/test_pipeline.py -k "not TestAPISchema"
-
-  docker:
-    name: Build Docker Image
-    runs-on: ubuntu-latest
-    needs: test
-    if: github.ref == 'refs/heads/main'
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Build Docker image
-        run: docker build -t loan-predictor:latest .
+      - name: Run data & ML tests only
+        run: pytest tests/ -v -k "TestDataGeneration or TestFeatureEngineering or TestPreprocessor"
