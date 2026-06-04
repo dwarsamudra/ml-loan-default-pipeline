@@ -33,7 +33,7 @@ jobs:
         run: python src/train.py
 
       - name: Run unit tests
-        run: pytest tests/ -v --tb=short --ignore=tests/test_pipeline.py -k "not TestAPISchema"
+        run: pytest tests/ -v --tb=short -k "not TestAPISchema" --ignore=tests/test_pipeline.py -k "not TestAPISchema"
 
   docker:
     name: Build Docker Image
