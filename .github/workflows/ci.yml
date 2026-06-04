@@ -21,10 +21,11 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install scikit-learn pandas numpy matplotlib seaborn joblib fastapi uvicorn pydantic pytest httpx
+        run: |
+          pip install scikit-learn pandas numpy matplotlib seaborn joblib pytest
 
       - name: Train model
         run: python src/train.py
 
-      - name: Run data & ML tests only
-        run: pytest tests/ -v -k "TestDataGeneration or TestFeatureEngineering or TestPreprocessor"
+      - name: Run tests
+        run: pytest tests/test_pipeline.py::TestDataGeneration tests/test_pipeline.py::TestFeatureEngineering tests/test_pipeline.py::TestPreprocessor -v
